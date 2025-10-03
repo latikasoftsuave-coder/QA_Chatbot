@@ -37,6 +37,7 @@ if user_question := st.chat_input("Ask me anything..."):
     try:
         response = requests.post(
             "http://127.0.0.1:8000/ask",
+            params={"session_id": st.session_state.session_id},
             json={"question": user_question}
         )
         data = response.json()

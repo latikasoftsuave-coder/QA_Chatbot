@@ -1,6 +1,7 @@
 import openai
 from datetime import datetime
 from db import SessionLocal, ChatMessage
+import uuid
 
 class ChatService:
 
@@ -66,3 +67,14 @@ class ChatService:
         )
         answer = response.choices[0].message.content
         return answer
+
+    @staticmethod
+    def process_user_question(question: str, session_id: str = None):
+        if not session_id:
+            session_id = str(uuid.uuid4())
+        print(session_id)
+        ChatService.store_user_message(session_id, question)
+        messages = ChatService.get_last_messages(session_id, limit=10)
+        answer = ChatService.generate_response(messages)
+        ChatService.store_assistant_message(session_id, answer)
+        return {"answer": answer}
